@@ -1,0 +1,31 @@
+type Global @entity {
+  id: ID!
+  value: BigInt!
+}
+
+type PIXCluster @entity {
+  id: ID!
+
+  tokenId: BigInt!
+  account: Account!
+}
+
+type Account @entity {
+  id: ID!
+
+  balance: BigInt!
+  clusters: [PIXCluster]! @derivedFrom(field: "account")
+  sales: [Sale]! @derivedFrom(field: "requestor")
+}
+
+type Sale @entity {
+  id: ID!
+
+  type: BigInt!
+  isActive: Boolean!
+  requestor: Account!
+  tokenIds: [BigInt!]!
+  price: BigInt!
+
+  endTime: BigInt
+}

@@ -1,0 +1,79 @@
+specVersion: 0.0.2
+description: PIXSales
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: PIXCluster
+    network: mumbai
+    source:
+      address: "0x0475dd6FD85546885868f6D6cc2707d63c7279f4"
+      abi: PIXCluster
+      startBlock: 21040280
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/cluster.ts
+      entities:
+        - Global
+        - Account
+        - PIXCluster
+      abis:
+        - name: PIXCluster
+          file: ./abis/cluster.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+
+  - kind: ethereum/contract
+    name: PIXFixedSale
+    network: mumbai
+    source:
+      address: "0x0Bf030F220F7Fd5ca5F95DEb5321724Ed1B27281"
+      abi: PIXFixedSale
+      startBlock: 21040310
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/sale.ts
+      entities:
+        - Global
+        - Sale
+      abis:
+        - name: PIXFixedSale
+          file: ./abis/sale.json
+      eventHandlers:
+        - event: SaleRequested(indexed address,indexed uint256,address,uint256[],uint256)
+          handler: handleSaleRequested
+        - event: SaleUpdated(indexed uint256,uint256)
+          handler: handleSaleUpdated
+        - event: SaleCancelled(indexed uint256)
+          handler: handleSaleCancelled
+
+  - kind: ethereum/contract
+    name: PIXAuctionSale
+    network: mumbai
+    source:
+      address: "0xbC6B842EeD5b1F80050Bb884f69245Aa3Ca34c35"
+      abi: PIXAuctionSale
+      startBlock: 21040313
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/auction.ts
+      entities:
+        - Global
+        - Sale
+      abis:
+        - name: PIXAuctionSale
+          file: ./abis/auction.json
+      eventHandlers:
+        - event: SaleRequested(indexed address,indexed uint256,address,uint64,uint256[],uint256)
+          handler: handleAuctionRequested
+        - event: SaleUpdated(indexed uint256,uint64,uint256)
+          handler: handleAuctionUpdated
+        - event: SaleCancelled(indexed uint256)
+          handler: handleAuctionCancelled

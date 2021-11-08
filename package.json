@@ -1,0 +1,15 @@
+{
+  "name": "pix-subgraph",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "codegen": "graph codegen --debug --output-dir src/entities/",
+    "build": "graph build",
+    "deploy": "graph deploy --studio pix-subgraph",
+    "auth": "graph auth --studio 3b36184164e6b673db1b0ff30fdddc28"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.21.1",
+    "@graphprotocol/graph-ts": "0.20.0"
+  }
+}
