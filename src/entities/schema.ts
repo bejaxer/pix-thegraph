@@ -9,7 +9,7 @@ import {
   Address,
   Bytes,
   BigInt,
-  BigDecimal,
+  BigDecimal
 } from "@graphprotocol/graph-ts";
 
 export class Global extends Entity {
@@ -89,6 +89,33 @@ export class PIXCluster extends Entity {
 
   set tokenId(value: BigInt) {
     this.set("tokenId", Value.fromBigInt(value));
+  }
+
+  get pixId(): BigInt {
+    let value = this.get("pixId");
+    return value.toBigInt();
+  }
+
+  set pixId(value: BigInt) {
+    this.set("pixId", Value.fromBigInt(value));
+  }
+
+  get category(): BigInt {
+    let value = this.get("category");
+    return value.toBigInt();
+  }
+
+  set category(value: BigInt) {
+    this.set("category", Value.fromBigInt(value));
+  }
+
+  get size(): BigInt {
+    let value = this.get("size");
+    return value.toBigInt();
+  }
+
+  set size(value: BigInt) {
+    this.set("size", Value.fromBigInt(value));
   }
 
   get account(): string {
@@ -256,7 +283,7 @@ export class Sale extends Entity {
     if (value === null) {
       this.unset("taker");
     } else {
-      this.set("taker", Value.fromString(value));
+      this.set("taker", Value.fromString(value as string));
     }
   }
 
