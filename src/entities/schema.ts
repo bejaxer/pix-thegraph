@@ -9,7 +9,7 @@ import {
   Address,
   Bytes,
   BigInt,
-  BigDecimal
+  BigDecimal,
 } from "@graphprotocol/graph-ts";
 
 export class Global extends Entity {
@@ -157,6 +157,15 @@ export class Account extends Entity {
   set sales(value: Array<string | null>) {
     this.set("sales", Value.fromStringArray(value));
   }
+
+  get purchases(): Array<string | null> {
+    let value = this.get("purchases");
+    return value.toStringArray();
+  }
+
+  set purchases(value: Array<string | null>) {
+    this.set("purchases", Value.fromStringArray(value));
+  }
 }
 
 export class Sale extends Entity {
@@ -232,6 +241,23 @@ export class Sale extends Entity {
 
   set price(value: BigInt) {
     this.set("price", Value.fromBigInt(value));
+  }
+
+  get taker(): string | null {
+    let value = this.get("taker");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set taker(value: string | null) {
+    if (value === null) {
+      this.unset("taker");
+    } else {
+      this.set("taker", Value.fromString(value));
+    }
   }
 
   get endTime(): BigInt | null {

@@ -51,6 +51,8 @@ dataSources:
           handler: handleSaleUpdated
         - event: SaleCancelled(indexed uint256)
           handler: handleSaleCancelled
+        - event: Purchased(indexed address,indexed address,indexed uint256,uint256)
+          handler: handleSalePurchased
 
   - kind: ethereum/contract
     name: PIXAuctionSale
@@ -77,3 +79,5 @@ dataSources:
           handler: handleAuctionUpdated
         - event: SaleCancelled(indexed uint256)
           handler: handleAuctionCancelled
+        - event: Purchased(indexed address,indexed address,indexed uint256,uint256)
+          handler: handleAuctionPurchased

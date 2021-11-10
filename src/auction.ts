@@ -1,8 +1,10 @@
 import { BigInt } from "@graphprotocol/graph-ts";
+import { createAccount } from "./account";
 import {
   SaleRequested,
   SaleUpdated,
   SaleCancelled,
+  Purchased,
 } from "./entities/PIXAuctionSale/PIXAuctionSale";
 import { Global, Sale } from "./entities/schema";
 
@@ -45,6 +47,34 @@ export function handleAuctionCancelled(event: SaleCancelled): void {
   let sale = Sale.load(getSaleId(event.params.saleId));
   sale.isActive = false;
   sale.save();
+
+  let entity = Global.load("auctionSales");
+  entity.value = entity.value.minus(BigInt.fromI32(1));
+  entity.save();
+
+  let salesEntity = Global.load("pixOnSale");
+  salesEntity.value = salesEntity.value.plus(
+    BigInt.fromI32(sale.tokenIds.length)
+  );
+  salesEntity.save();
+}
+
+export function handleAuctionPurchased(event: Purchased): void {
+  let sale = Sale.load(getSaleId(event.params.saleId));
+  createAccount(event.params.buyer);
+  sale.taker = event.params.buyer.toHexString();
+  sale.isActive = false;
+  sale.save();
+
+  let entity = Global.load("auctionSales");
+  entity.value = entity.value.minus(BigInt.fromI32(1));
+  entity.save();
+
+  let salesEntity = Global.load("pixOnSale");
+  salesEntity.value = salesEntity.value.minus(
+    BigInt.fromI32(sale.tokenIds.length)
+  );
+  salesEntity.save();
 }
 
 function getSaleId(id: BigInt): string {
