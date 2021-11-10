@@ -5,7 +5,7 @@
   "scripts": {
     "codegen": "graph codegen --debug --output-dir src/entities/",
     "build": "graph build",
-    "deploy": "graph deploy --studio pix-subgraph",
+    "deploy": "graph deploy --product hosted-service albanny/pix-the-graph\n",
     "auth": "graph auth --studio 3b36184164e6b673db1b0ff30fdddc28"
   },
   "dependencies": {

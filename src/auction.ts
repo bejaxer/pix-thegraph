@@ -6,7 +6,7 @@ import {
 } from "./entities/PIXAuctionSale/PIXAuctionSale";
 import { Global, Sale } from "./entities/schema";
 
-export function handleSaleRequested(event: SaleRequested): void {
+export function handleAuctionRequested(event: SaleRequested): void {
   let entity = Global.load("auctionSales");
   if (entity == null) {
     entity = new Global("auctionSales");
@@ -14,6 +14,13 @@ export function handleSaleRequested(event: SaleRequested): void {
   }
   entity.value = entity.value.plus(BigInt.fromI32(1));
   entity.save();
+  let salesEntity = Global.load("pixOnSale");
+  if (salesEntity == null) {
+    salesEntity = new Global("pixOnSale");
+    salesEntity.value = new BigInt(0);
+  }
+  salesEntity.value = salesEntity.value.plus(BigInt.fromI32(event.params.tokenIds.length));
+  salesEntity.save();
 
   let sale = new Sale(getSaleId(event.params.saleId));
   sale.type = BigInt.fromI32(2);
@@ -39,5 +46,5 @@ export function handleSaleCancelled(event: SaleCancelled): void {
 }
 
 function getSaleId(id: BigInt): string {
-  return "AuctionSale - " + id.toString();
+  return id.toString();
 }
