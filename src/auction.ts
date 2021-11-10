@@ -19,7 +19,9 @@ export function handleAuctionRequested(event: SaleRequested): void {
     salesEntity = new Global("pixOnSale");
     salesEntity.value = new BigInt(0);
   }
-  salesEntity.value = salesEntity.value.plus(BigInt.fromI32(event.params.tokenIds.length));
+  salesEntity.value = salesEntity.value.plus(
+    BigInt.fromI32(event.params.tokenIds.length)
+  );
   salesEntity.save();
 
   let sale = new Sale(getSaleId(event.params.saleId));
@@ -32,14 +34,14 @@ export function handleAuctionRequested(event: SaleRequested): void {
   sale.save();
 }
 
-export function handleSaleUpdated(event: SaleUpdated): void {
+export function handleAuctionUpdated(event: SaleUpdated): void {
   let sale = Sale.load(getSaleId(event.params.saleId));
   sale.price = event.params.newPrice;
   sale.endTime = event.params.newEndTime;
   sale.save();
 }
 
-export function handleSaleCancelled(event: SaleCancelled): void {
+export function handleAuctionCancelled(event: SaleCancelled): void {
   let sale = Sale.load(getSaleId(event.params.saleId));
   sale.isActive = false;
   sale.save();
