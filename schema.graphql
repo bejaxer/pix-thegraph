@@ -16,6 +16,7 @@ type Account @entity {
   balance: BigInt!
   clusters: [PIXCluster]! @derivedFrom(field: "account")
   sales: [Sale]! @derivedFrom(field: "requestor")
+  purchases: [Sale]! @derivedFrom(field: "taker")
 }
 
 type Sale @entity {
@@ -27,5 +28,6 @@ type Sale @entity {
   tokenIds: [BigInt!]!
   price: BigInt!
 
+  taker: Account
   endTime: BigInt
 }
