@@ -31,8 +31,8 @@ export function handleTransfer(event: Transfer): void {
     createAccount(event.params.to);
     cluster.account = event.params.to.toHexString();
     cluster.pixId = pixInfoResult.value0;
-    cluster.category = pixInfoResult.value1;
-    cluster.size = pixInfoResult.value2;
+    cluster.category = BigInt.fromI32(pixInfoResult.value1);
+    cluster.size = BigInt.fromI32(pixInfoResult.value2);
     cluster.save();
   } else {
     let cluster = PIXCluster.load(getPIXClusterId(event.params.tokenId));
