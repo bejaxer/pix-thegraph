@@ -7,6 +7,9 @@ type PIXCluster @entity {
   id: ID!
 
   tokenId: BigInt!
+  pixId: BigInt!
+  category: BigInt!
+  size: BigInt!
   account: Account!
 }
 

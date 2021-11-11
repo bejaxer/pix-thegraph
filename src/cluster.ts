@@ -1,5 +1,8 @@
 import { BigInt } from "@graphprotocol/graph-ts";
-import { Transfer } from "./entities/PIXCluster/PIXCluster";
+import {
+  Transfer,
+  PIXCluster as PIXClusterContract,
+} from "./entities/PIXCluster/PIXCluster";
 import { Global, Account, PIXCluster } from "./entities/schema";
 import { createAccount } from "./account";
 
@@ -21,10 +24,15 @@ export function handleTransfer(event: Transfer): void {
   entity.save();
 
   if (event.params.from.toHexString() == ZERO_ADDRESS) {
+    let contract = PIXClusterContract.bind(event.address);
+    let pixInfoResult = contract.pixInfos(event.params.tokenId);
     let cluster = new PIXCluster(getPIXClusterId(event.params.tokenId));
     cluster.tokenId = event.params.tokenId;
     createAccount(event.params.to);
     cluster.account = event.params.to.toHexString();
+    cluster.pixId = pixInfoResult.value0;
+    cluster.category = BigInt.fromI32(pixInfoResult.value1);
+    cluster.size = BigInt.fromI32(pixInfoResult.value2);
     cluster.save();
   } else {
     let cluster = PIXCluster.load(getPIXClusterId(event.params.tokenId));
