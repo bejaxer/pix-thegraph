@@ -91,6 +91,33 @@ export class PIXCluster extends Entity {
     this.set("tokenId", Value.fromBigInt(value));
   }
 
+  get pixId(): BigInt {
+    let value = this.get("pixId");
+    return value.toBigInt();
+  }
+
+  set pixId(value: BigInt) {
+    this.set("pixId", Value.fromBigInt(value));
+  }
+
+  get category(): BigInt {
+    let value = this.get("category");
+    return value.toBigInt();
+  }
+
+  set category(value: BigInt) {
+    this.set("category", Value.fromBigInt(value));
+  }
+
+  get size(): BigInt {
+    let value = this.get("size");
+    return value.toBigInt();
+  }
+
+  set size(value: BigInt) {
+    this.set("size", Value.fromBigInt(value));
+  }
+
   get account(): string {
     let value = this.get("account");
     return value.toString();
@@ -156,6 +183,15 @@ export class Account extends Entity {
 
   set sales(value: Array<string | null>) {
     this.set("sales", Value.fromStringArray(value));
+  }
+
+  get purchases(): Array<string | null> {
+    let value = this.get("purchases");
+    return value.toStringArray();
+  }
+
+  set purchases(value: Array<string | null>) {
+    this.set("purchases", Value.fromStringArray(value));
   }
 }
 
@@ -232,6 +268,23 @@ export class Sale extends Entity {
 
   set price(value: BigInt) {
     this.set("price", Value.fromBigInt(value));
+  }
+
+  get taker(): string | null {
+    let value = this.get("taker");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set taker(value: string | null) {
+    if (value === null) {
+      this.unset("taker");
+    } else {
+      this.set("taker", Value.fromString(value as string));
+    }
   }
 
   get endTime(): BigInt | null {
