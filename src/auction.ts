@@ -53,7 +53,7 @@ export function handleAuctionCancelled(event: SaleCancelled): void {
   entity.save();
 
   let salesEntity = Global.load("pixOnSale");
-  salesEntity.value = salesEntity.value.plus(
+  salesEntity.value = salesEntity.value.minus(
     BigInt.fromI32(sale.tokenIds.length)
   );
   salesEntity.save();
@@ -64,6 +64,7 @@ export function handleAuctionPurchased(event: Purchased): void {
   createAccount(event.params.buyer);
   sale.taker = event.params.buyer.toHexString();
   sale.isActive = false;
+  sale.soldDate = event.block.timestamp;
   sale.save();
 
   let entity = Global.load("auctionSales");
@@ -78,5 +79,5 @@ export function handleAuctionPurchased(event: Purchased): void {
 }
 
 function getSaleId(id: BigInt): string {
-  return id.toString();
+  return "A"+id.toString();
 }

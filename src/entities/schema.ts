@@ -303,4 +303,20 @@ export class Sale extends Entity {
       this.set("endTime", Value.fromBigInt(value as BigInt));
     }
   }
+  get soldDate(): BigInt | null {
+    let value = this.get("soldDate");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set soldDate(value: BigInt | null) {
+    if (value === null) {
+      this.unset("soldDate");
+    } else {
+      this.set("soldDate", Value.fromBigInt(value as BigInt));
+    }
+  }
 }
