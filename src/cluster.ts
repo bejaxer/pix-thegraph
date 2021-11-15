@@ -61,7 +61,7 @@ export function handleTransfer(event: Transfer): void {
   account.balance = account.balance.plus(BigInt.fromI32(1));
   account.save();
 
-  let transfer = new PIXClusterTransfer(transferEntity.value.toString());
+  let transfer = new PIXClusterTransfer(transferEntity.value);
   transfer.cluster = getPIXClusterId(event.params.tokenId);
   transfer.from = event.params.from.toHexString();
   transfer.to = event.params.to.toHexString();

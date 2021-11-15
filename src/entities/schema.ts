@@ -129,9 +129,9 @@ export class PIXCluster extends Entity {
 }
 
 export class PIXClusterTransfer extends Entity {
-  constructor(id: string) {
+  constructor(id: BigInt) {
     super();
-    this.set("id", Value.fromString(id));
+    this.set("id", Value.fromBigInt(id));
   }
 
   save(): void {
