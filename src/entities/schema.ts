@@ -9,7 +9,7 @@ import {
   Address,
   Bytes,
   BigInt,
-  BigDecimal
+  BigDecimal,
 } from "@graphprotocol/graph-ts";
 
 export class Global extends Entity {
@@ -129,9 +129,9 @@ export class PIXCluster extends Entity {
 }
 
 export class PIXClusterTransfer extends Entity {
-  constructor(id: string) {
+  constructor(id: BigInt) {
     super();
-    this.set("id", Value.fromString(id));
+    this.set("id", Value.fromBigInt(id));
   }
 
   save(): void {
@@ -149,13 +149,13 @@ export class PIXClusterTransfer extends Entity {
     return store.get("PIXClusterTransfer", id) as PIXClusterTransfer | null;
   }
 
-  get id(): string {
+  get id(): BigInt {
     let value = this.get("id");
-    return value.toString();
+    return value.toBigInt();
   }
 
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
+  set id(value: BigInt) {
+    this.set("id", Value.fromBigInt(value));
   }
 
   get cluster(): string {
