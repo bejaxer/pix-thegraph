@@ -62,6 +62,24 @@ export class ApprovalForAll__Params {
   }
 }
 
+export class CombinePriceUpdated extends ethereum.Event {
+  get params(): CombinePriceUpdated__Params {
+    return new CombinePriceUpdated__Params(this);
+  }
+}
+
+export class CombinePriceUpdated__Params {
+  _event: CombinePriceUpdated;
+
+  constructor(event: CombinePriceUpdated) {
+    this._event = event;
+  }
+
+  get price(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+}
+
 export class Combined extends ethereum.Event {
   get params(): Combined__Params {
     return new Combined__Params(this);
@@ -85,6 +103,28 @@ export class Combined__Params {
 
   get size(): i32 {
     return this._event.parameters[2].value.toI32();
+  }
+}
+
+export class ModeratorUpdated extends ethereum.Event {
+  get params(): ModeratorUpdated__Params {
+    return new ModeratorUpdated__Params(this);
+  }
+}
+
+export class ModeratorUpdated__Params {
+  _event: ModeratorUpdated;
+
+  constructor(event: ModeratorUpdated) {
+    this._event = event;
+  }
+
+  get moderator(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get approved(): boolean {
+    return this._event.parameters[1].value.toBoolean();
   }
 }
 
@@ -127,16 +167,72 @@ export class PIXMinted__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get pixId(): BigInt {
+  get tokenId(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
 
+  get pixId(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+
   get category(): i32 {
-    return this._event.parameters[2].value.toI32();
+    return this._event.parameters[3].value.toI32();
   }
 
   get size(): i32 {
-    return this._event.parameters[3].value.toI32();
+    return this._event.parameters[4].value.toI32();
+  }
+
+  get classification(): i32 {
+    return this._event.parameters[5].value.toI32();
+  }
+
+  get country(): string {
+    return this._event.parameters[6].value.toString();
+  }
+}
+
+export class PackPriceUpdated extends ethereum.Event {
+  get params(): PackPriceUpdated__Params {
+    return new PackPriceUpdated__Params(this);
+  }
+}
+
+export class PackPriceUpdated__Params {
+  _event: PackPriceUpdated;
+
+  constructor(event: PackPriceUpdated) {
+    this._event = event;
+  }
+
+  get mode(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get price(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
+export class PaymentTokenUpdated extends ethereum.Event {
+  get params(): PaymentTokenUpdated__Params {
+    return new PaymentTokenUpdated__Params(this);
+  }
+}
+
+export class PaymentTokenUpdated__Params {
+  _event: PaymentTokenUpdated;
+
+  constructor(event: PaymentTokenUpdated) {
+    this._event = event;
+  }
+
+  get token(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get approved(): boolean {
+    return this._event.parameters[1].value.toBoolean();
   }
 }
 
@@ -155,6 +251,10 @@ export class Requested__Params {
 
   get account(): Address {
     return this._event.parameters[0].value.toAddress();
+  }
+
+  get mode(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
   }
 }
 
@@ -184,15 +284,47 @@ export class Transfer__Params {
   }
 }
 
+export class TreasuryUpdated extends ethereum.Event {
+  get params(): TreasuryUpdated__Params {
+    return new TreasuryUpdated__Params(this);
+  }
+}
+
+export class TreasuryUpdated__Params {
+  _event: TreasuryUpdated;
+
+  constructor(event: TreasuryUpdated) {
+    this._event = event;
+  }
+
+  get treasury(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get fee(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
 export class PIXCluster__pixInfosResult {
   value0: BigInt;
   value1: i32;
   value2: i32;
+  value3: i32;
+  value4: string;
 
-  constructor(value0: BigInt, value1: i32, value2: i32) {
+  constructor(
+    value0: BigInt,
+    value1: i32,
+    value2: i32,
+    value3: i32,
+    value4: string
+  ) {
     this.value0 = value0;
     this.value1 = value1;
     this.value2 = value2;
+    this.value3 = value3;
+    this.value4 = value4;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
@@ -206,6 +338,28 @@ export class PIXCluster__pixInfosResult {
       "value2",
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value2))
     );
+    map.set(
+      "value3",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value3))
+    );
+    map.set("value4", ethereum.Value.fromString(this.value4));
+    return map;
+  }
+}
+
+export class PIXCluster__treasuryResult {
+  value0: Address;
+  value1: BigInt;
+
+  constructor(value0: Address, value1: BigInt) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromAddress(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
     return map;
   }
 }
@@ -213,29 +367,6 @@ export class PIXCluster__pixInfosResult {
 export class PIXCluster extends ethereum.SmartContract {
   static bind(address: Address): PIXCluster {
     return new PIXCluster("PIXCluster", address);
-  }
-
-  CLUSTER_MINT_COUNT(): BigInt {
-    let result = super.call(
-      "CLUSTER_MINT_COUNT",
-      "CLUSTER_MINT_COUNT():(uint256)",
-      []
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_CLUSTER_MINT_COUNT(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "CLUSTER_MINT_COUNT",
-      "CLUSTER_MINT_COUNT():(uint256)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   balanceOf(owner: Address): BigInt {
@@ -278,14 +409,14 @@ export class PIXCluster extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toI32());
   }
 
-  combineFee(): BigInt {
-    let result = super.call("combineFee", "combineFee():(uint256)", []);
+  combinePrice(): BigInt {
+    let result = super.call("combinePrice", "combinePrice():(uint256)", []);
 
     return result[0].toBigInt();
   }
 
-  try_combineFee(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("combineFee", "combineFee():(uint256)", []);
+  try_combinePrice(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("combinePrice", "combinePrice():(uint256)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -348,21 +479,6 @@ export class PIXCluster extends ethereum.SmartContract {
 
   try_lastTokenId(): ethereum.CallResult<BigInt> {
     let result = super.tryCall("lastTokenId", "lastTokenId():(uint256)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  mintFee(): BigInt {
-    let result = super.call("mintFee", "mintFee():(uint256)", []);
-
-    return result[0].toBigInt();
-  }
-
-  try_mintFee(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("mintFee", "mintFee():(uint256)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -438,17 +554,82 @@ export class PIXCluster extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  packPrices(param0: BigInt): BigInt {
+    let result = super.call("packPrices", "packPrices(uint256):(uint256)", [
+      ethereum.Value.fromUnsignedBigInt(param0)
+    ]);
+
+    return result[0].toBigInt();
+  }
+
+  try_packPrices(param0: BigInt): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("packPrices", "packPrices(uint256):(uint256)", [
+      ethereum.Value.fromUnsignedBigInt(param0)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  paymentTokens(param0: Address): boolean {
+    let result = super.call("paymentTokens", "paymentTokens(address):(bool)", [
+      ethereum.Value.fromAddress(param0)
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_paymentTokens(param0: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "paymentTokens",
+      "paymentTokens(address):(bool)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  pendingPackType(param0: Address): BigInt {
+    let result = super.call(
+      "pendingPackType",
+      "pendingPackType(address):(uint256)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_pendingPackType(param0: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "pendingPackType",
+      "pendingPackType(address):(uint256)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   pixInfos(param0: BigInt): PIXCluster__pixInfosResult {
     let result = super.call(
       "pixInfos",
-      "pixInfos(uint256):(uint256,uint8,uint8)",
+      "pixInfos(uint256):(uint256,uint8,uint8,uint8,string)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
 
     return new PIXCluster__pixInfosResult(
       result[0].toBigInt(),
       result[1].toI32(),
-      result[2].toI32()
+      result[2].toI32(),
+      result[3].toI32(),
+      result[4].toString()
     );
   }
 
@@ -457,7 +638,7 @@ export class PIXCluster extends ethereum.SmartContract {
   ): ethereum.CallResult<PIXCluster__pixInfosResult> {
     let result = super.tryCall(
       "pixInfos",
-      "pixInfos(uint256):(uint256,uint8,uint8)",
+      "pixInfos(uint256):(uint256,uint8,uint8,uint8,string)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
     if (result.reverted) {
@@ -468,7 +649,9 @@ export class PIXCluster extends ethereum.SmartContract {
       new PIXCluster__pixInfosResult(
         value[0].toBigInt(),
         value[1].toI32(),
-        value[2].toI32()
+        value[2].toI32(),
+        value[3].toI32(),
+        value[4].toString()
       )
     );
   }
@@ -486,25 +669,6 @@ export class PIXCluster extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  requested(param0: Address): boolean {
-    let result = super.call("requested", "requested(address):(bool)", [
-      ethereum.Value.fromAddress(param0)
-    ]);
-
-    return result[0].toBoolean();
-  }
-
-  try_requested(param0: Address): ethereum.CallResult<boolean> {
-    let result = super.tryCall("requested", "requested(address):(bool)", [
-      ethereum.Value.fromAddress(param0)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
   supportsInterface(interfaceId: Bytes): boolean {
@@ -631,35 +795,25 @@ export class PIXCluster extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
-}
 
-export class ConstructorCall extends ethereum.Call {
-  get inputs(): ConstructorCall__Inputs {
-    return new ConstructorCall__Inputs(this);
+  treasury(): PIXCluster__treasuryResult {
+    let result = super.call("treasury", "treasury():(address,uint256)", []);
+
+    return new PIXCluster__treasuryResult(
+      result[0].toAddress(),
+      result[1].toBigInt()
+    );
   }
 
-  get outputs(): ConstructorCall__Outputs {
-    return new ConstructorCall__Outputs(this);
-  }
-}
-
-export class ConstructorCall__Inputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
-  }
-
-  get pixt(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class ConstructorCall__Outputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
+  try_treasury(): ethereum.CallResult<PIXCluster__treasuryResult> {
+    let result = super.tryCall("treasury", "treasury():(address,uint256)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new PIXCluster__treasuryResult(value[0].toAddress(), value[1].toBigInt())
+    );
   }
 }
 
@@ -693,6 +847,36 @@ export class ApproveCall__Outputs {
   _call: ApproveCall;
 
   constructor(call: ApproveCall) {
+    this._call = call;
+  }
+}
+
+export class BatchBurnCall extends ethereum.Call {
+  get inputs(): BatchBurnCall__Inputs {
+    return new BatchBurnCall__Inputs(this);
+  }
+
+  get outputs(): BatchBurnCall__Outputs {
+    return new BatchBurnCall__Outputs(this);
+  }
+}
+
+export class BatchBurnCall__Inputs {
+  _call: BatchBurnCall;
+
+  constructor(call: BatchBurnCall) {
+    this._call = call;
+  }
+
+  get tokenIds(): Array<BigInt> {
+    return this._call.inputValues[0].value.toBigIntArray();
+  }
+}
+
+export class BatchBurnCall__Outputs {
+  _call: BatchBurnCall;
+
+  constructor(call: BatchBurnCall) {
     this._call = call;
   }
 }
@@ -745,6 +929,14 @@ export class BatchMintCallInfosStruct extends ethereum.Tuple {
   get size(): i32 {
     return this[2].toI32();
   }
+
+  get classification(): i32 {
+    return this[3].toI32();
+  }
+
+  get country(): string {
+    return this[4].toString();
+  }
 }
 
 export class CombineCall extends ethereum.Call {
@@ -777,6 +969,70 @@ export class CombineCall__Outputs {
   }
 }
 
+export class CompleteRequestCall extends ethereum.Call {
+  get inputs(): CompleteRequestCall__Inputs {
+    return new CompleteRequestCall__Inputs(this);
+  }
+
+  get outputs(): CompleteRequestCall__Outputs {
+    return new CompleteRequestCall__Outputs(this);
+  }
+}
+
+export class CompleteRequestCall__Inputs {
+  _call: CompleteRequestCall;
+
+  constructor(call: CompleteRequestCall) {
+    this._call = call;
+  }
+
+  get to(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get mode(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class CompleteRequestCall__Outputs {
+  _call: CompleteRequestCall;
+
+  constructor(call: CompleteRequestCall) {
+    this._call = call;
+  }
+}
+
+export class InitializeCall extends ethereum.Call {
+  get inputs(): InitializeCall__Inputs {
+    return new InitializeCall__Inputs(this);
+  }
+
+  get outputs(): InitializeCall__Outputs {
+    return new InitializeCall__Outputs(this);
+  }
+}
+
+export class InitializeCall__Inputs {
+  _call: InitializeCall;
+
+  constructor(call: InitializeCall) {
+    this._call = call;
+  }
+
+  get pixt(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class InitializeCall__Outputs {
+  _call: InitializeCall;
+
+  constructor(call: InitializeCall) {
+    this._call = call;
+  }
+}
+
 export class MintToCall extends ethereum.Call {
   get inputs(): MintToCall__Inputs {
     return new MintToCall__Inputs(this);
@@ -804,6 +1060,14 @@ export class MintToCall__Inputs {
 
   get categories(): Array<i32> {
     return this._call.inputValues[2].value.toI32Array();
+  }
+
+  get classifications(): Array<i32> {
+    return this._call.inputValues[3].value.toI32Array();
+  }
+
+  get countries(): Array<string> {
+    return this._call.inputValues[4].value.toStringArray();
   }
 }
 
@@ -857,12 +1121,50 @@ export class RequestMintCall__Inputs {
   constructor(call: RequestMintCall) {
     this._call = call;
   }
+
+  get token(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get mode(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
 }
 
 export class RequestMintCall__Outputs {
   _call: RequestMintCall;
 
   constructor(call: RequestMintCall) {
+    this._call = call;
+  }
+}
+
+export class SafeBurnCall extends ethereum.Call {
+  get inputs(): SafeBurnCall__Inputs {
+    return new SafeBurnCall__Inputs(this);
+  }
+
+  get outputs(): SafeBurnCall__Outputs {
+    return new SafeBurnCall__Outputs(this);
+  }
+}
+
+export class SafeBurnCall__Inputs {
+  _call: SafeBurnCall;
+
+  constructor(call: SafeBurnCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class SafeBurnCall__Outputs {
+  _call: SafeBurnCall;
+
+  constructor(call: SafeBurnCall) {
     this._call = call;
   }
 }
@@ -912,6 +1214,14 @@ export class SafeMintCallInfoStruct extends ethereum.Tuple {
 
   get size(): i32 {
     return this[2].toI32();
+  }
+
+  get classification(): i32 {
+    return this[3].toI32();
+  }
+
+  get country(): string {
+    return this[4].toString();
   }
 }
 
@@ -1059,62 +1369,32 @@ export class SetBaseURICall__Outputs {
   }
 }
 
-export class SetCombineFeeCall extends ethereum.Call {
-  get inputs(): SetCombineFeeCall__Inputs {
-    return new SetCombineFeeCall__Inputs(this);
+export class SetCombinePriceCall extends ethereum.Call {
+  get inputs(): SetCombinePriceCall__Inputs {
+    return new SetCombinePriceCall__Inputs(this);
   }
 
-  get outputs(): SetCombineFeeCall__Outputs {
-    return new SetCombineFeeCall__Outputs(this);
+  get outputs(): SetCombinePriceCall__Outputs {
+    return new SetCombinePriceCall__Outputs(this);
   }
 }
 
-export class SetCombineFeeCall__Inputs {
-  _call: SetCombineFeeCall;
+export class SetCombinePriceCall__Inputs {
+  _call: SetCombinePriceCall;
 
-  constructor(call: SetCombineFeeCall) {
+  constructor(call: SetCombinePriceCall) {
     this._call = call;
   }
 
-  get fee(): BigInt {
+  get price(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
 }
 
-export class SetCombineFeeCall__Outputs {
-  _call: SetCombineFeeCall;
+export class SetCombinePriceCall__Outputs {
+  _call: SetCombinePriceCall;
 
-  constructor(call: SetCombineFeeCall) {
-    this._call = call;
-  }
-}
-
-export class SetMintFeeCall extends ethereum.Call {
-  get inputs(): SetMintFeeCall__Inputs {
-    return new SetMintFeeCall__Inputs(this);
-  }
-
-  get outputs(): SetMintFeeCall__Outputs {
-    return new SetMintFeeCall__Outputs(this);
-  }
-}
-
-export class SetMintFeeCall__Inputs {
-  _call: SetMintFeeCall;
-
-  constructor(call: SetMintFeeCall) {
-    this._call = call;
-  }
-
-  get fee(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class SetMintFeeCall__Outputs {
-  _call: SetMintFeeCall;
-
-  constructor(call: SetMintFeeCall) {
+  constructor(call: SetCombinePriceCall) {
     this._call = call;
   }
 }
@@ -1149,6 +1429,108 @@ export class SetModeratorCall__Outputs {
   _call: SetModeratorCall;
 
   constructor(call: SetModeratorCall) {
+    this._call = call;
+  }
+}
+
+export class SetPackPriceCall extends ethereum.Call {
+  get inputs(): SetPackPriceCall__Inputs {
+    return new SetPackPriceCall__Inputs(this);
+  }
+
+  get outputs(): SetPackPriceCall__Outputs {
+    return new SetPackPriceCall__Outputs(this);
+  }
+}
+
+export class SetPackPriceCall__Inputs {
+  _call: SetPackPriceCall;
+
+  constructor(call: SetPackPriceCall) {
+    this._call = call;
+  }
+
+  get mode(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get price(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class SetPackPriceCall__Outputs {
+  _call: SetPackPriceCall;
+
+  constructor(call: SetPackPriceCall) {
+    this._call = call;
+  }
+}
+
+export class SetPaymentTokenCall extends ethereum.Call {
+  get inputs(): SetPaymentTokenCall__Inputs {
+    return new SetPaymentTokenCall__Inputs(this);
+  }
+
+  get outputs(): SetPaymentTokenCall__Outputs {
+    return new SetPaymentTokenCall__Outputs(this);
+  }
+}
+
+export class SetPaymentTokenCall__Inputs {
+  _call: SetPaymentTokenCall;
+
+  constructor(call: SetPaymentTokenCall) {
+    this._call = call;
+  }
+
+  get token(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get approved(): boolean {
+    return this._call.inputValues[1].value.toBoolean();
+  }
+}
+
+export class SetPaymentTokenCall__Outputs {
+  _call: SetPaymentTokenCall;
+
+  constructor(call: SetPaymentTokenCall) {
+    this._call = call;
+  }
+}
+
+export class SetTreasuryCall extends ethereum.Call {
+  get inputs(): SetTreasuryCall__Inputs {
+    return new SetTreasuryCall__Inputs(this);
+  }
+
+  get outputs(): SetTreasuryCall__Outputs {
+    return new SetTreasuryCall__Outputs(this);
+  }
+}
+
+export class SetTreasuryCall__Inputs {
+  _call: SetTreasuryCall;
+
+  constructor(call: SetTreasuryCall) {
+    this._call = call;
+  }
+
+  get _treasury(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get _fee(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class SetTreasuryCall__Outputs {
+  _call: SetTreasuryCall;
+
+  constructor(call: SetTreasuryCall) {
     this._call = call;
   }
 }
@@ -1221,6 +1603,48 @@ export class TransferOwnershipCall__Outputs {
   }
 }
 
+export class UpdateTerritoryInfoCall extends ethereum.Call {
+  get inputs(): UpdateTerritoryInfoCall__Inputs {
+    return new UpdateTerritoryInfoCall__Inputs(this);
+  }
+
+  get outputs(): UpdateTerritoryInfoCall__Outputs {
+    return new UpdateTerritoryInfoCall__Outputs(this);
+  }
+}
+
+export class UpdateTerritoryInfoCall__Inputs {
+  _call: UpdateTerritoryInfoCall;
+
+  constructor(call: UpdateTerritoryInfoCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get pixId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get classification(): i32 {
+    return this._call.inputValues[2].value.toI32();
+  }
+
+  get country(): string {
+    return this._call.inputValues[3].value.toString();
+  }
+}
+
+export class UpdateTerritoryInfoCall__Outputs {
+  _call: UpdateTerritoryInfoCall;
+
+  constructor(call: UpdateTerritoryInfoCall) {
+    this._call = call;
+  }
+}
+
 export class WithdrawCall extends ethereum.Call {
   get inputs(): WithdrawCall__Inputs {
     return new WithdrawCall__Inputs(this);
@@ -1236,6 +1660,10 @@ export class WithdrawCall__Inputs {
 
   constructor(call: WithdrawCall) {
     this._call = call;
+  }
+
+  get tokens(): Array<Address> {
+    return this._call.inputValues[0].value.toAddressArray();
   }
 }
 
