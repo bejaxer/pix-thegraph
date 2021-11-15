@@ -128,6 +128,64 @@ export class PIXCluster extends Entity {
   }
 }
 
+export class PIXClusterTransfer extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save PIXClusterTransfer entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save PIXClusterTransfer entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("PIXClusterTransfer", id.toString(), this);
+  }
+
+  static load(id: string): PIXClusterTransfer | null {
+    return store.get("PIXClusterTransfer", id) as PIXClusterTransfer | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get cluster(): string {
+    let value = this.get("cluster");
+    return value.toString();
+  }
+
+  set cluster(value: string) {
+    this.set("cluster", Value.fromString(value));
+  }
+
+  get from(): string {
+    let value = this.get("from");
+    return value.toString();
+  }
+
+  set from(value: string) {
+    this.set("from", Value.fromString(value));
+  }
+
+  get to(): string {
+    let value = this.get("to");
+    return value.toString();
+  }
+
+  set to(value: string) {
+    this.set("to", Value.fromString(value));
+  }
+}
+
 export class Account extends Entity {
   constructor(id: string) {
     super();
@@ -303,6 +361,7 @@ export class Sale extends Entity {
       this.set("endTime", Value.fromBigInt(value as BigInt));
     }
   }
+
   get soldDate(): BigInt | null {
     let value = this.get("soldDate");
     if (value === null || value.kind == ValueKind.NULL) {

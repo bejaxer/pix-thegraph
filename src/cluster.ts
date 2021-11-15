@@ -3,7 +3,12 @@ import {
   Transfer,
   PIXCluster as PIXClusterContract,
 } from "./entities/PIXCluster/PIXCluster";
-import { Global, Account, PIXCluster } from "./entities/schema";
+import {
+  Global,
+  Account,
+  PIXCluster,
+  PIXClusterTransfer,
+} from "./entities/schema";
 import { createAccount } from "./account";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -23,11 +28,18 @@ export function handleTransfer(event: Transfer): void {
   }
   entity.save();
 
+  let transferEntity = Global.load("totalTransfer");
+  if (transferEntity == null) {
+    transferEntity = new Global("totalTransfer");
+    transferEntity.value = new BigInt(0);
+  }
+
   if (event.params.from.toHexString() == ZERO_ADDRESS) {
     let contract = PIXClusterContract.bind(event.address);
     let pixInfoResult = contract.pixInfos(event.params.tokenId);
     let cluster = new PIXCluster(getPIXClusterId(event.params.tokenId));
     cluster.tokenId = event.params.tokenId;
+    createAccount(event.params.from);
     createAccount(event.params.to);
     cluster.account = event.params.to.toHexString();
     cluster.pixId = pixInfoResult.value0;
@@ -48,6 +60,15 @@ export function handleTransfer(event: Transfer): void {
   let account = Account.load(event.params.to.toHexString());
   account.balance = account.balance.plus(BigInt.fromI32(1));
   account.save();
+
+  let transfer = new PIXClusterTransfer(transferEntity.value.toString());
+  transfer.cluster = getPIXClusterId(event.params.tokenId);
+  transfer.from = event.params.from.toHexString();
+  transfer.to = event.params.to.toHexString();
+  transfer.save();
+
+  transferEntity.value = transferEntity.value.plus(BigInt.fromI32(1));
+  transferEntity.save();
 }
 
 function getPIXClusterId(id: BigInt): string {

@@ -13,6 +13,14 @@ type PIXCluster @entity {
   account: Account!
 }
 
+type PIXClusterTransfer @entity {
+  id: ID!
+
+  cluster: PIXCluster!
+  from: Account!
+  to: Account!
+}
+
 type Account @entity {
   id: ID!
 
