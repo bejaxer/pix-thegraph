@@ -37,7 +37,7 @@ export function handleAuctionRequested(event: SaleRequested): void {
 
   let totalEntity = Global.load("totalSaleLogs");
   if (totalEntity == null) {
-    totalEntity = new Global("totalSales");
+    totalEntity = new Global("totalSaleLogs");
     totalEntity.value = new BigInt(0);
   }
 
