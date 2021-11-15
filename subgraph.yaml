@@ -7,7 +7,7 @@ dataSources:
     name: PIXCluster
     network: mumbai
     source:
-      address: "0xb3f40a5fe7f1621A36C540CF74BC76F8bc10fbAc"
+      address: "0x7fedd7cc42e5486f2ff73147dd9c06b80665b2a1"
       abi: PIXCluster
       startBlock: 21040280
     mapping:
@@ -30,7 +30,7 @@ dataSources:
     name: PIXFixedSale
     network: mumbai
     source:
-      address: "0x1F2C31095e8D9947e7FEb3202e9fd20C1eC0FF4B"
+      address: "0xd4340273Bfc020Ba5f9fF058abC0333B85C10D28"
       abi: PIXFixedSale
       startBlock: 21040310
     mapping:
@@ -58,7 +58,7 @@ dataSources:
     name: PIXAuctionSale
     network: mumbai
     source:
-      address: "0x86D6c04788f9355d88FDF15156eF8B0aC29A616b"
+      address: "0xD4527C76225F5fcc7b7fF22Cc442458c652E2344"
       abi: PIXAuctionSale
       startBlock: 21040313
     mapping:
