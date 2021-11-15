@@ -9,7 +9,7 @@ import {
   Address,
   Bytes,
   BigInt,
-  BigDecimal,
+  BigDecimal
 } from "@graphprotocol/graph-ts";
 
 export class Global extends Entity {
@@ -129,9 +129,9 @@ export class PIXCluster extends Entity {
 }
 
 export class PIXClusterTransfer extends Entity {
-  constructor(id: BigInt) {
+  constructor(id: string) {
     super();
-    this.set("id", Value.fromBigInt(id));
+    this.set("id", Value.fromString(id));
   }
 
   save(): void {
@@ -149,13 +149,22 @@ export class PIXClusterTransfer extends Entity {
     return store.get("PIXClusterTransfer", id) as PIXClusterTransfer | null;
   }
 
-  get id(): BigInt {
+  get id(): string {
     let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get transferId(): BigInt {
+    let value = this.get("transferId");
     return value.toBigInt();
   }
 
-  set id(value: BigInt) {
-    this.set("id", Value.fromBigInt(value));
+  set transferId(value: BigInt) {
+    this.set("transferId", Value.fromBigInt(value));
   }
 
   get cluster(): string {
@@ -377,5 +386,54 @@ export class Sale extends Entity {
     } else {
       this.set("soldDate", Value.fromBigInt(value as BigInt));
     }
+  }
+}
+
+export class SaleLog extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save SaleLog entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save SaleLog entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("SaleLog", id.toString(), this);
+  }
+
+  static load(id: string): SaleLog | null {
+    return store.get("SaleLog", id) as SaleLog | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get sale(): string {
+    let value = this.get("sale");
+    return value.toString();
+  }
+
+  set sale(value: string) {
+    this.set("sale", Value.fromString(value));
+  }
+
+  get status(): BigInt {
+    let value = this.get("status");
+    return value.toBigInt();
+  }
+
+  set status(value: BigInt) {
+    this.set("status", Value.fromBigInt(value));
   }
 }

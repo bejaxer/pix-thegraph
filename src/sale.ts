@@ -6,7 +6,7 @@ import {
   SaleCancelled,
   Purchased,
 } from "./entities/PIXFixedSale/PIXFixedSale";
-import { Global, Sale } from "./entities/schema";
+import { Global, Sale, SaleLog } from "./entities/schema";
 
 export function handleSaleRequested(event: SaleRequested): void {
   let entity = Global.load("fixedSales");
@@ -34,6 +34,20 @@ export function handleSaleRequested(event: SaleRequested): void {
   sale.tokenIds = event.params.tokenIds;
   sale.price = event.params.price;
   sale.save();
+
+  let totalEntity = Global.load("totalSaleLogs");
+  if (totalEntity == null) {
+    totalEntity = new Global("totalSales");
+    totalEntity.value = new BigInt(0);
+  }
+
+  let saleLog = new SaleLog(totalEntity.value.toString());
+  saleLog.sale = getSaleId(event.params.saleId);
+  saleLog.status = new BigInt(0);
+  saleLog.save();
+
+  totalEntity.value = totalEntity.value.plus(BigInt.fromI32(1));
+  totalEntity.save();
 }
 
 export function handleSaleUpdated(event: SaleUpdated): void {
@@ -56,6 +70,16 @@ export function handleSaleCancelled(event: SaleCancelled): void {
     BigInt.fromI32(sale.tokenIds.length)
   );
   salesEntity.save();
+
+  let totalEntity = Global.load("totalSaleLogs");
+
+  let saleLog = new SaleLog(totalEntity.value.toString());
+  saleLog.sale = getSaleId(event.params.saleId);
+  saleLog.status = new BigInt(1);
+  saleLog.save();
+
+  totalEntity.value = totalEntity.value.plus(BigInt.fromI32(1));
+  totalEntity.save();
 }
 
 export function handleSalePurchased(event: Purchased): void {
@@ -70,14 +94,23 @@ export function handleSalePurchased(event: Purchased): void {
   entity.value = entity.value.minus(BigInt.fromI32(1));
   entity.save();
 
-
   let salesEntity = Global.load("pixOnSale");
   salesEntity.value = salesEntity.value.minus(
     BigInt.fromI32(sale.tokenIds.length)
   );
   salesEntity.save();
+
+  let totalEntity = Global.load("totalSaleLogs");
+
+  let saleLog = new SaleLog(totalEntity.value.toString());
+  saleLog.sale = getSaleId(event.params.saleId);
+  saleLog.status = new BigInt(2);
+  saleLog.save();
+
+  totalEntity.value = totalEntity.value.plus(BigInt.fromI32(1));
+  totalEntity.save();
 }
 
 function getSaleId(id: BigInt): string {
-  return "F"+id.toString();
+  return "F" + id.toString();
 }

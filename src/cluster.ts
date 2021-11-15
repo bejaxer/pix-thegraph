@@ -28,12 +28,6 @@ export function handleTransfer(event: Transfer): void {
   }
   entity.save();
 
-  let transferEntity = Global.load("totalTransfer");
-  if (transferEntity == null) {
-    transferEntity = new Global("totalTransfer");
-    transferEntity.value = new BigInt(0);
-  }
-
   if (event.params.from.toHexString() == ZERO_ADDRESS) {
     let contract = PIXClusterContract.bind(event.address);
     let pixInfoResult = contract.pixInfos(event.params.tokenId);
@@ -61,7 +55,14 @@ export function handleTransfer(event: Transfer): void {
   account.balance = account.balance.plus(BigInt.fromI32(1));
   account.save();
 
-  let transfer = new PIXClusterTransfer(transferEntity.value);
+  let transferEntity = Global.load("totalTransfer");
+  if (transferEntity == null) {
+    transferEntity = new Global("totalTransfer");
+    transferEntity.value = new BigInt(0);
+  }
+
+  let transfer = new PIXClusterTransfer(transferEntity.value.toString());
+  transfer.transferId = transferEntity.value;
   transfer.cluster = getPIXClusterId(event.params.tokenId);
   transfer.from = event.params.from.toHexString();
   transfer.to = event.params.to.toHexString();

@@ -16,6 +16,7 @@ type PIXCluster @entity {
 type PIXClusterTransfer @entity {
   id: ID!
 
+  transferId: BigInt!
   cluster: PIXCluster!
   from: Account!
   to: Account!
@@ -43,4 +44,11 @@ type Sale @entity {
   endTime: BigInt
 
   soldDate: BigInt
+}
+
+type SaleLog @entity {
+  id: ID!
+
+  sale: Sale!
+  status: BigInt!
 }
