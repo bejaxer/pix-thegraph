@@ -23,9 +23,9 @@ export function handlePIXMinted(event: PIXMinted): void {
 export function handleTransfer(event: Transfer): void {
   if (event.params.tokenId.isZero()) return;
 
+  createAccount(event.params.to);
   if (event.params.from.toHexString() != ZERO_ADDRESS) {
     let pix = PIX.load(getPIXId(event.params.tokenId));
-    createAccount(event.params.to);
     pix.account = event.params.to.toHexString();
     pix.save();
 
@@ -34,7 +34,6 @@ export function handleTransfer(event: Transfer): void {
     account.save();
   }
 
-  createAccount(event.params.to);
   let account = Account.load(event.params.to.toHexString());
   account.balance = account.balance.plus(BigInt.fromI32(1));
   account.save();
