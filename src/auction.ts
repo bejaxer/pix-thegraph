@@ -8,7 +8,7 @@ import {
   Bid,
   BidCancelled,
 } from "./entities/PIXAuctionSale/PIXAuctionSale";
-import { Global, Sale, Bid as BidEntity } from "./entities/schema";
+import { Global, Sale, SaleLog, Bid as BidEntity } from "./entities/schema";
 
 export function handleAuctionRequested(event: SaleRequested): void {
   let entity = Global.load("auctionSales");
@@ -36,6 +36,20 @@ export function handleAuctionRequested(event: SaleRequested): void {
   sale.price = event.params.price;
   sale.endTime = event.params.endTime;
   sale.save();
+
+  let totalEntity = Global.load("totalSaleLogs");
+  if (totalEntity == null) {
+    totalEntity = new Global("totalSaleLogs");
+    totalEntity.value = new BigInt(0);
+  }
+
+  let saleLog = new SaleLog(totalEntity.value.toString());
+  saleLog.sale = getSaleId(event.params.saleId);
+  saleLog.status = new BigInt(0);
+  saleLog.save();
+
+  totalEntity.value = totalEntity.value.plus(BigInt.fromI32(1));
+  totalEntity.save();
 }
 
 export function handleAuctionUpdated(event: SaleUpdated): void {
@@ -59,6 +73,16 @@ export function handleAuctionCancelled(event: SaleCancelled): void {
     BigInt.fromI32(sale.tokenIds.length)
   );
   salesEntity.save();
+
+  let totalEntity = Global.load("totalSaleLogs");
+
+  let saleLog = new SaleLog(totalEntity.value.toString());
+  saleLog.sale = getSaleId(event.params.saleId);
+  saleLog.status = new BigInt(1);
+  saleLog.save();
+
+  totalEntity.value = totalEntity.value.plus(BigInt.fromI32(1));
+  totalEntity.save();
 }
 
 export function handleBid(event: Bid): void {
@@ -113,6 +137,16 @@ export function handleAuctionPurchased(event: Purchased): void {
     BigInt.fromI32(sale.tokenIds.length)
   );
   salesEntity.save();
+
+  let totalEntity = Global.load("totalSaleLogs");
+
+  let saleLog = new SaleLog(totalEntity.value.toString());
+  saleLog.sale = getSaleId(event.params.saleId);
+  saleLog.status = new BigInt(2);
+  saleLog.save();
+
+  totalEntity.value = totalEntity.value.plus(BigInt.fromI32(1));
+  totalEntity.save();
 }
 
 function getSaleId(id: BigInt): string {

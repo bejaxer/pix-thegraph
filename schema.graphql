@@ -29,6 +29,7 @@ type PIXTransfer @entity {
   id: ID!
 
   pix: PIX!
+  transferId: BigInt!
   from: Account!
   to: Account!
 }
@@ -47,6 +48,13 @@ type Sale @entity {
   soldDate: BigInt
 
   bids: [Bid]! @derivedFrom(field: "sale")
+}
+
+type SaleLog @entity {
+  id: ID!
+
+  sale: Sale!
+  status: BigInt!
 }
 
 type Bid @entity {
