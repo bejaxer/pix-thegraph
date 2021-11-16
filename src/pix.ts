@@ -34,6 +34,7 @@ export function handleTransfer(event: Transfer): void {
     account.save();
   }
 
+  createAccount(event.params.to);
   let account = Account.load(event.params.to.toHexString());
   account.balance = account.balance.plus(BigInt.fromI32(1));
   account.save();
