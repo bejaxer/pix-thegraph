@@ -5,8 +5,10 @@ import {
   SaleUpdated,
   SaleCancelled,
   Purchased,
+  Bid,
+  BidCancelled,
 } from "./entities/PIXAuctionSale/PIXAuctionSale";
-import { Global, Sale } from "./entities/schema";
+import { Global, Sale, Bid as BidEntity } from "./entities/schema";
 
 export function handleAuctionRequested(event: SaleRequested): void {
   let entity = Global.load("auctionSales");
@@ -59,6 +61,41 @@ export function handleAuctionCancelled(event: SaleCancelled): void {
   salesEntity.save();
 }
 
+export function handleBid(event: Bid): void {
+  createAccount(event.params.bidder);
+  let totalBids = Global.load(getTotalBidsKey(event.params.saleId));
+  if (totalBids == null) {
+    totalBids = new Global(getTotalBidsKey(event.params.saleId));
+    totalBids.value = BigInt.fromI32(0);
+  }
+  totalBids.value = totalBids.value.plus(BigInt.fromI32(1));
+  totalBids.save();
+
+  let bid = new BidEntity(getBidId(event.params.saleId, totalBids.value));
+  bid.sale = getSaleId(event.params.saleId);
+  bid.bidder = event.params.bidder.toHexString();
+  bid.price = event.params.bidAmount;
+  bid.isActive = true;
+  bid.save();
+}
+
+export function handleBidCancelled(event: BidCancelled): void {
+  let totalBids = Global.load(getTotalBidsKey(event.params.saleId));
+
+  let bid = BidEntity.load(getBidId(event.params.saleId, totalBids.value));
+  if (
+    !(
+      bid.sale != getSaleId(event.params.saleId) &&
+      bid.bidder != event.params.bidder.toHexString() &&
+      bid.price != event.params.bidAmount &&
+      bid.isActive
+    )
+  )
+    return;
+  bid.isActive = true;
+  bid.save();
+}
+
 export function handleAuctionPurchased(event: Purchased): void {
   let sale = Sale.load(getSaleId(event.params.saleId));
   createAccount(event.params.buyer);
@@ -79,5 +116,13 @@ export function handleAuctionPurchased(event: Purchased): void {
 }
 
 function getSaleId(id: BigInt): string {
-  return "A"+id.toString();
+  return "A" + id.toString();
+}
+
+function getTotalBidsKey(saleId: BigInt): string {
+  return "totalBidsOnSale - " + saleId.toString();
+}
+
+function getBidId(saleId: BigInt, bidCount: BigInt): string {
+  return "Bid - " + saleId.toString() + ":" + bidCount.toString();
 }

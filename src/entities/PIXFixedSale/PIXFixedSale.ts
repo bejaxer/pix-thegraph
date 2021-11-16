@@ -10,24 +10,6 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
-export class FeeUpdated extends ethereum.Event {
-  get params(): FeeUpdated__Params {
-    return new FeeUpdated__Params(this);
-  }
-}
-
-export class FeeUpdated__Params {
-  _event: FeeUpdated;
-
-  constructor(event: FeeUpdated) {
-    this._event = event;
-  }
-
-  get tradingFee(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-}
-
 export class OwnershipTransferred extends ethereum.Event {
   get params(): OwnershipTransferred__Params {
     return new OwnershipTransferred__Params(this);
@@ -170,6 +152,48 @@ export class TreasuryUpdated__Params {
   get treasury(): Address {
     return this._event.parameters[0].value.toAddress();
   }
+
+  get fee(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get mode(): boolean {
+    return this._event.parameters[2].value.toBoolean();
+  }
+}
+
+export class PIXFixedSale__landTreasuryResult {
+  value0: Address;
+  value1: BigInt;
+
+  constructor(value0: Address, value1: BigInt) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromAddress(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    return map;
+  }
+}
+
+export class PIXFixedSale__pixtTreasuryResult {
+  value0: Address;
+  value1: BigInt;
+
+  constructor(value0: Address, value1: BigInt) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromAddress(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    return map;
+  }
 }
 
 export class PIXFixedSale__saleInfoResult {
@@ -195,6 +219,37 @@ export class PIXFixedSale__saleInfoResult {
 export class PIXFixedSale extends ethereum.SmartContract {
   static bind(address: Address): PIXFixedSale {
     return new PIXFixedSale("PIXFixedSale", address);
+  }
+
+  landTreasury(): PIXFixedSale__landTreasuryResult {
+    let result = super.call(
+      "landTreasury",
+      "landTreasury():(address,uint256)",
+      []
+    );
+
+    return new PIXFixedSale__landTreasuryResult(
+      result[0].toAddress(),
+      result[1].toBigInt()
+    );
+  }
+
+  try_landTreasury(): ethereum.CallResult<PIXFixedSale__landTreasuryResult> {
+    let result = super.tryCall(
+      "landTreasury",
+      "landTreasury():(address,uint256)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new PIXFixedSale__landTreasuryResult(
+        value[0].toAddress(),
+        value[1].toBigInt()
+      )
+    );
   }
 
   lastSaleId(): BigInt {
@@ -270,19 +325,50 @@ export class PIXFixedSale extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  pixt(): Address {
-    let result = super.call("pixt", "pixt():(address)", []);
+  pixToken(): Address {
+    let result = super.call("pixToken", "pixToken():(address)", []);
 
     return result[0].toAddress();
   }
 
-  try_pixt(): ethereum.CallResult<Address> {
-    let result = super.tryCall("pixt", "pixt():(address)", []);
+  try_pixToken(): ethereum.CallResult<Address> {
+    let result = super.tryCall("pixToken", "pixToken():(address)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  pixtTreasury(): PIXFixedSale__pixtTreasuryResult {
+    let result = super.call(
+      "pixtTreasury",
+      "pixtTreasury():(address,uint256)",
+      []
+    );
+
+    return new PIXFixedSale__pixtTreasuryResult(
+      result[0].toAddress(),
+      result[1].toBigInt()
+    );
+  }
+
+  try_pixtTreasury(): ethereum.CallResult<PIXFixedSale__pixtTreasuryResult> {
+    let result = super.tryCall(
+      "pixtTreasury",
+      "pixtTreasury():(address,uint256)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new PIXFixedSale__pixtTreasuryResult(
+        value[0].toAddress(),
+        value[1].toBigInt()
+      )
+    );
   }
 
   saleInfo(param0: BigInt): PIXFixedSale__saleInfoResult {
@@ -320,54 +406,20 @@ export class PIXFixedSale extends ethereum.SmartContract {
     );
   }
 
-  tradingFeePct(): BigInt {
-    let result = super.call("tradingFeePct", "tradingFeePct():(uint256)", []);
-
-    return result[0].toBigInt();
-  }
-
-  try_tradingFeePct(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "tradingFeePct",
-      "tradingFeePct():(uint256)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  treasury(): Address {
-    let result = super.call("treasury", "treasury():(address)", []);
-
-    return result[0].toAddress();
-  }
-
-  try_treasury(): ethereum.CallResult<Address> {
-    let result = super.tryCall("treasury", "treasury():(address)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  whitelistedNftTokens(param0: Address): boolean {
+  whitelistedNFTs(param0: Address): boolean {
     let result = super.call(
-      "whitelistedNftTokens",
-      "whitelistedNftTokens(address):(bool)",
+      "whitelistedNFTs",
+      "whitelistedNFTs(address):(bool)",
       [ethereum.Value.fromAddress(param0)]
     );
 
     return result[0].toBoolean();
   }
 
-  try_whitelistedNftTokens(param0: Address): ethereum.CallResult<boolean> {
+  try_whitelistedNFTs(param0: Address): ethereum.CallResult<boolean> {
     let result = super.tryCall(
-      "whitelistedNftTokens",
-      "whitelistedNftTokens(address):(bool)",
+      "whitelistedNFTs",
+      "whitelistedNFTs(address):(bool)",
       [ethereum.Value.fromAddress(param0)]
     );
     if (result.reverted) {
@@ -375,44 +427,6 @@ export class PIXFixedSale extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-}
-
-export class ConstructorCall extends ethereum.Call {
-  get inputs(): ConstructorCall__Inputs {
-    return new ConstructorCall__Inputs(this);
-  }
-
-  get outputs(): ConstructorCall__Outputs {
-    return new ConstructorCall__Outputs(this);
-  }
-}
-
-export class ConstructorCall__Inputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
-  }
-
-  get _treasury(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get _tradingFeePct(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-
-  get _pixt(): Address {
-    return this._call.inputValues[2].value.toAddress();
-  }
-}
-
-export class ConstructorCall__Outputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
   }
 }
 
@@ -442,6 +456,36 @@ export class CancelSaleCall__Outputs {
   _call: CancelSaleCall;
 
   constructor(call: CancelSaleCall) {
+    this._call = call;
+  }
+}
+
+export class InitializeCall extends ethereum.Call {
+  get inputs(): InitializeCall__Inputs {
+    return new InitializeCall__Inputs(this);
+  }
+
+  get outputs(): InitializeCall__Outputs {
+    return new InitializeCall__Outputs(this);
+  }
+}
+
+export class InitializeCall__Inputs {
+  _call: InitializeCall;
+
+  constructor(call: InitializeCall) {
+    this._call = call;
+  }
+
+  get _pixt(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class InitializeCall__Outputs {
+  _call: InitializeCall;
+
+  constructor(call: InitializeCall) {
     this._call = call;
   }
 }
@@ -586,36 +630,6 @@ export class RequestSaleCall__Outputs {
   }
 }
 
-export class SetTradingFeePctCall extends ethereum.Call {
-  get inputs(): SetTradingFeePctCall__Inputs {
-    return new SetTradingFeePctCall__Inputs(this);
-  }
-
-  get outputs(): SetTradingFeePctCall__Outputs {
-    return new SetTradingFeePctCall__Outputs(this);
-  }
-}
-
-export class SetTradingFeePctCall__Inputs {
-  _call: SetTradingFeePctCall;
-
-  constructor(call: SetTradingFeePctCall) {
-    this._call = call;
-  }
-
-  get _tradingFeePct(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class SetTradingFeePctCall__Outputs {
-  _call: SetTradingFeePctCall;
-
-  constructor(call: SetTradingFeePctCall) {
-    this._call = call;
-  }
-}
-
 export class SetTreasuryCall extends ethereum.Call {
   get inputs(): SetTreasuryCall__Inputs {
     return new SetTreasuryCall__Inputs(this);
@@ -636,6 +650,14 @@ export class SetTreasuryCall__Inputs {
   get _treasury(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
+
+  get _fee(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get _mode(): boolean {
+    return this._call.inputValues[2].value.toBoolean();
+  }
 }
 
 export class SetTreasuryCall__Outputs {
@@ -646,20 +668,20 @@ export class SetTreasuryCall__Outputs {
   }
 }
 
-export class SetWhitelistedNftTokensCall extends ethereum.Call {
-  get inputs(): SetWhitelistedNftTokensCall__Inputs {
-    return new SetWhitelistedNftTokensCall__Inputs(this);
+export class SetWhitelistedNFTsCall extends ethereum.Call {
+  get inputs(): SetWhitelistedNFTsCall__Inputs {
+    return new SetWhitelistedNFTsCall__Inputs(this);
   }
 
-  get outputs(): SetWhitelistedNftTokensCall__Outputs {
-    return new SetWhitelistedNftTokensCall__Outputs(this);
+  get outputs(): SetWhitelistedNFTsCall__Outputs {
+    return new SetWhitelistedNFTsCall__Outputs(this);
   }
 }
 
-export class SetWhitelistedNftTokensCall__Inputs {
-  _call: SetWhitelistedNftTokensCall;
+export class SetWhitelistedNFTsCall__Inputs {
+  _call: SetWhitelistedNFTsCall;
 
-  constructor(call: SetWhitelistedNftTokensCall) {
+  constructor(call: SetWhitelistedNFTsCall) {
     this._call = call;
   }
 
@@ -672,10 +694,10 @@ export class SetWhitelistedNftTokensCall__Inputs {
   }
 }
 
-export class SetWhitelistedNftTokensCall__Outputs {
-  _call: SetWhitelistedNftTokensCall;
+export class SetWhitelistedNFTsCall__Outputs {
+  _call: SetWhitelistedNFTsCall;
 
-  constructor(call: SetWhitelistedNftTokensCall) {
+  constructor(call: SetWhitelistedNFTsCall) {
     this._call = call;
   }
 }

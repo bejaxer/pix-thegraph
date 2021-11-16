@@ -3,31 +3,34 @@ type Global @entity {
   value: BigInt!
 }
 
-type PIXCluster @entity {
+type Account @entity {
+  id: ID!
+
+  balance: BigInt!
+  pixes: [PIX]! @derivedFrom(field: "account")
+  sales: [Sale]! @derivedFrom(field: "requestor")
+  purchases: [Sale]! @derivedFrom(field: "taker")
+  bids: [Bid]! @derivedFrom(field: "bidder")
+}
+
+type PIX @entity {
   id: ID!
 
   tokenId: BigInt!
   pixId: BigInt!
   category: BigInt!
   size: BigInt!
+  classification: BigInt!
+  country: String!
   account: Account!
 }
 
-type PIXClusterTransfer @entity {
+type PIXTransfer @entity {
   id: ID!
 
-  cluster: PIXCluster!
+  pix: PIX!
   from: Account!
   to: Account!
-}
-
-type Account @entity {
-  id: ID!
-
-  balance: BigInt!
-  clusters: [PIXCluster]! @derivedFrom(field: "account")
-  sales: [Sale]! @derivedFrom(field: "requestor")
-  purchases: [Sale]! @derivedFrom(field: "taker")
 }
 
 type Sale @entity {
@@ -41,6 +44,16 @@ type Sale @entity {
 
   taker: Account
   endTime: BigInt
-
   soldDate: BigInt
+
+  bids: [Bid]! @derivedFrom(field: "sale")
+}
+
+type Bid @entity {
+  id: ID!
+
+  sale: Sale!
+  bidder: Account!
+  price: BigInt!
+  isActive: Boolean!
 }

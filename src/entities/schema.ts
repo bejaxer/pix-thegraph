@@ -52,7 +52,7 @@ export class Global extends Entity {
   }
 }
 
-export class PIXCluster extends Entity {
+export class Account extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -60,17 +60,93 @@ export class PIXCluster extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save PIXCluster entity without an ID");
+    assert(id !== null, "Cannot save Account entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save PIXCluster entity with non-string ID. " +
+      "Cannot save Account entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("PIXCluster", id.toString(), this);
+    store.set("Account", id.toString(), this);
   }
 
-  static load(id: string): PIXCluster | null {
-    return store.get("PIXCluster", id) as PIXCluster | null;
+  static load(id: string): Account | null {
+    return store.get("Account", id) as Account | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get balance(): BigInt {
+    let value = this.get("balance");
+    return value.toBigInt();
+  }
+
+  set balance(value: BigInt) {
+    this.set("balance", Value.fromBigInt(value));
+  }
+
+  get pixes(): Array<string | null> {
+    let value = this.get("pixes");
+    return value.toStringArray();
+  }
+
+  set pixes(value: Array<string | null>) {
+    this.set("pixes", Value.fromStringArray(value));
+  }
+
+  get sales(): Array<string | null> {
+    let value = this.get("sales");
+    return value.toStringArray();
+  }
+
+  set sales(value: Array<string | null>) {
+    this.set("sales", Value.fromStringArray(value));
+  }
+
+  get purchases(): Array<string | null> {
+    let value = this.get("purchases");
+    return value.toStringArray();
+  }
+
+  set purchases(value: Array<string | null>) {
+    this.set("purchases", Value.fromStringArray(value));
+  }
+
+  get bids(): Array<string | null> {
+    let value = this.get("bids");
+    return value.toStringArray();
+  }
+
+  set bids(value: Array<string | null>) {
+    this.set("bids", Value.fromStringArray(value));
+  }
+}
+
+export class PIX extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save PIX entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save PIX entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("PIX", id.toString(), this);
+  }
+
+  static load(id: string): PIX | null {
+    return store.get("PIX", id) as PIX | null;
   }
 
   get id(): string {
@@ -118,6 +194,24 @@ export class PIXCluster extends Entity {
     this.set("size", Value.fromBigInt(value));
   }
 
+  get classification(): BigInt {
+    let value = this.get("classification");
+    return value.toBigInt();
+  }
+
+  set classification(value: BigInt) {
+    this.set("classification", Value.fromBigInt(value));
+  }
+
+  get country(): string {
+    let value = this.get("country");
+    return value.toString();
+  }
+
+  set country(value: string) {
+    this.set("country", Value.fromString(value));
+  }
+
   get account(): string {
     let value = this.get("account");
     return value.toString();
@@ -128,25 +222,25 @@ export class PIXCluster extends Entity {
   }
 }
 
-export class PIXClusterTransfer extends Entity {
-  constructor(id: BigInt) {
+export class PIXTransfer extends Entity {
+  constructor(id: string) {
     super();
-    this.set("id", Value.fromBigInt(id));
+    this.set("id", Value.fromString(id));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save PIXClusterTransfer entity without an ID");
+    assert(id !== null, "Cannot save PIXTransfer entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save PIXClusterTransfer entity with non-string ID. " +
+      "Cannot save PIXTransfer entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("PIXClusterTransfer", id.toString(), this);
+    store.set("PIXTransfer", id.toString(), this);
   }
 
-  static load(id: string): PIXClusterTransfer | null {
-    return store.get("PIXClusterTransfer", id) as PIXClusterTransfer | null;
+  static load(id: string): PIXTransfer | null {
+    return store.get("PIXTransfer", id) as PIXTransfer | null;
   }
 
   get id(): string {
@@ -158,13 +252,13 @@ export class PIXClusterTransfer extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get cluster(): string {
-    let value = this.get("cluster");
+  get pix(): string {
+    let value = this.get("pix");
     return value.toString();
   }
 
-  set cluster(value: string) {
-    this.set("cluster", Value.fromString(value));
+  set pix(value: string) {
+    this.set("pix", Value.fromString(value));
   }
 
   get from(): string {
@@ -183,73 +277,6 @@ export class PIXClusterTransfer extends Entity {
 
   set to(value: string) {
     this.set("to", Value.fromString(value));
-  }
-}
-
-export class Account extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id !== null, "Cannot save Account entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save Account entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("Account", id.toString(), this);
-  }
-
-  static load(id: string): Account | null {
-    return store.get("Account", id) as Account | null;
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get balance(): BigInt {
-    let value = this.get("balance");
-    return value.toBigInt();
-  }
-
-  set balance(value: BigInt) {
-    this.set("balance", Value.fromBigInt(value));
-  }
-
-  get clusters(): Array<string | null> {
-    let value = this.get("clusters");
-    return value.toStringArray();
-  }
-
-  set clusters(value: Array<string | null>) {
-    this.set("clusters", Value.fromStringArray(value));
-  }
-
-  get sales(): Array<string | null> {
-    let value = this.get("sales");
-    return value.toStringArray();
-  }
-
-  set sales(value: Array<string | null>) {
-    this.set("sales", Value.fromStringArray(value));
-  }
-
-  get purchases(): Array<string | null> {
-    let value = this.get("purchases");
-    return value.toStringArray();
-  }
-
-  set purchases(value: Array<string | null>) {
-    this.set("purchases", Value.fromStringArray(value));
   }
 }
 
@@ -377,5 +404,81 @@ export class Sale extends Entity {
     } else {
       this.set("soldDate", Value.fromBigInt(value as BigInt));
     }
+  }
+
+  get bids(): Array<string | null> {
+    let value = this.get("bids");
+    return value.toStringArray();
+  }
+
+  set bids(value: Array<string | null>) {
+    this.set("bids", Value.fromStringArray(value));
+  }
+}
+
+export class Bid extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Bid entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Bid entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Bid", id.toString(), this);
+  }
+
+  static load(id: string): Bid | null {
+    return store.get("Bid", id) as Bid | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get sale(): string {
+    let value = this.get("sale");
+    return value.toString();
+  }
+
+  set sale(value: string) {
+    this.set("sale", Value.fromString(value));
+  }
+
+  get bidder(): string {
+    let value = this.get("bidder");
+    return value.toString();
+  }
+
+  set bidder(value: string) {
+    this.set("bidder", Value.fromString(value));
+  }
+
+  get price(): BigInt {
+    let value = this.get("price");
+    return value.toBigInt();
+  }
+
+  set price(value: BigInt) {
+    this.set("price", Value.fromBigInt(value));
+  }
+
+  get isActive(): boolean {
+    let value = this.get("isActive");
+    return value.toBoolean();
+  }
+
+  set isActive(value: boolean) {
+    this.set("isActive", Value.fromBoolean(value));
   }
 }
