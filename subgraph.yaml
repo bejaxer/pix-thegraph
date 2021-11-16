@@ -23,6 +23,8 @@ dataSources:
         - name: PIX
           file: ./abis/pix.json
       eventHandlers:
+        - event: PIXMinted(indexed address,indexed uint256,indexed uint256,uint8,uint8,uint8,string)
+          handler: handlePIXMinted
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
 
