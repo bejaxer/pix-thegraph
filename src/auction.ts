@@ -158,5 +158,5 @@ function getTotalBidsKey(saleId: BigInt): string {
 }
 
 function getBidId(saleId: BigInt, bidCount: BigInt): string {
-  return "Bid - " + saleId.toString() + ":" + bidCount.toString();
+  return saleId.toString() + "-" + bidCount.toString();
 }
