@@ -381,22 +381,38 @@ export class Sale extends Entity {
     this.set("price", Value.fromBigInt(value));
   }
 
-  get country(): string {
+  get country(): string | null {
     let value = this.get("country");
-    return value.toString();
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set country(value: string) {
-    this.set("country", Value.fromString(value));
+  set country(value: string | null) {
+    if (value === null) {
+      this.unset("country");
+    } else {
+      this.set("country", Value.fromString(value as string));
+    }
   }
 
-  get classification(): BigInt {
+  get classification(): BigInt | null {
     let value = this.get("classification");
-    return value.toBigInt();
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set classification(value: BigInt) {
-    this.set("classification", Value.fromBigInt(value));
+  set classification(value: BigInt | null) {
+    if (value === null) {
+      this.unset("classification");
+    } else {
+      this.set("classification", Value.fromBigInt(value as BigInt));
+    }
   }
 
   get taker(): string | null {
@@ -582,5 +598,39 @@ export class Bid extends Entity {
 
   set isActive(value: boolean) {
     this.set("isActive", Value.fromBoolean(value));
+  }
+
+  get country(): string | null {
+    let value = this.get("country");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set country(value: string | null) {
+    if (value === null) {
+      this.unset("country");
+    } else {
+      this.set("country", Value.fromString(value as string));
+    }
+  }
+
+  get classification(): BigInt | null {
+    let value = this.get("classification");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set classification(value: BigInt | null) {
+    if (value === null) {
+      this.unset("classification");
+    } else {
+      this.set("classification", Value.fromBigInt(value as BigInt));
+    }
   }
 }

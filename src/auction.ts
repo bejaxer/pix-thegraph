@@ -116,11 +116,16 @@ export function handleBid(event: Bid): void {
   totalBids.value = totalBids.value.plus(BigInt.fromI32(1));
   totalBids.save();
 
+  let sale = Sale.load(getSaleId(event.params.saleId));
   let bid = new BidEntity(getBidId(event.params.saleId, totalBids.value));
   bid.sale = getSaleId(event.params.saleId);
   bid.bidder = event.params.bidder.toHexString();
   bid.price = event.params.bidAmount;
   bid.isActive = true;
+  if (sale != null) {
+    bid.country = sale.country;
+    bid.classification = sale.classification;
+  }
   bid.save();
 }
 
