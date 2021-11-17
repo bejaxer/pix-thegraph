@@ -8,7 +8,13 @@ import {
   Bid,
   BidCancelled,
 } from "./entities/PIXAuctionSale/PIXAuctionSale";
-import { Global, Sale, SaleLog, Bid as BidEntity } from "./entities/schema";
+import {
+  Global,
+  Sale,
+  SaleLog,
+  Bid as BidEntity,
+  PIX,
+} from "./entities/schema";
 
 export function handleAuctionRequested(event: SaleRequested): void {
   let entity = Global.load("auctionSales");
@@ -36,6 +42,15 @@ export function handleAuctionRequested(event: SaleRequested): void {
   sale.price = event.params.price;
   sale.endTime = event.params.endTime;
   sale.save();
+
+  let tokenIds = sale.tokenIds as Array<BigInt>;
+  for (let i = 0; i < tokenIds.length; i++) {
+    let pix = PIX.load(getPIXId(tokenIds[i]));
+    if (pix != null) {
+      pix.sale = sale.id;
+      pix.save();
+    }
+  }
 
   let totalEntity = Global.load("totalSaleLogs");
   if (totalEntity == null) {
@@ -151,6 +166,10 @@ export function handleAuctionPurchased(event: Purchased): void {
 
 function getSaleId(id: BigInt): string {
   return "A" + id.toString();
+}
+
+function getPIXId(id: BigInt): string {
+  return "PIX - " + id.toString();
 }
 
 function getTotalBidsKey(saleId: BigInt): string {

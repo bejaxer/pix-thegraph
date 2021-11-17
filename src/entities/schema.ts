@@ -220,6 +220,23 @@ export class PIX extends Entity {
   set account(value: string) {
     this.set("account", Value.fromString(value));
   }
+
+  get sale(): string | null {
+    let value = this.get("sale");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set sale(value: string | null) {
+    if (value === null) {
+      this.unset("sale");
+    } else {
+      this.set("sale", Value.fromString(value as string));
+    }
+  }
 }
 
 export class PIXTransfer extends Entity {
@@ -422,6 +439,15 @@ export class Sale extends Entity {
 
   set bids(value: Array<string | null>) {
     this.set("bids", Value.fromStringArray(value));
+  }
+
+  get pixes(): Array<string | null> {
+    let value = this.get("pixes");
+    return value.toStringArray();
+  }
+
+  set pixes(value: Array<string | null>) {
+    this.set("pixes", Value.fromStringArray(value));
   }
 }
 
