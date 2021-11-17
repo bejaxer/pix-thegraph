@@ -381,6 +381,24 @@ export class Sale extends Entity {
     this.set("price", Value.fromBigInt(value));
   }
 
+  get country(): string {
+    let value = this.get("country");
+    return value.toString();
+  }
+
+  set country(value: string) {
+    this.set("country", Value.fromString(value));
+  }
+
+  get classification(): BigInt {
+    let value = this.get("classification");
+    return value.toBigInt();
+  }
+
+  set classification(value: BigInt) {
+    this.set("classification", Value.fromBigInt(value));
+  }
+
   get taker(): string | null {
     let value = this.get("taker");
     if (value === null || value.kind == ValueKind.NULL) {

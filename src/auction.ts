@@ -49,6 +49,12 @@ export function handleAuctionRequested(event: SaleRequested): void {
     if (pix != null) {
       pix.sale = sale.id;
       pix.save();
+
+      if (i == 0) {
+        sale.country = pix.country;
+        sale.classification = pix.classification;
+        sale.save();
+      }
     }
   }
 

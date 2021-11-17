@@ -43,6 +43,8 @@ type Sale @entity {
   requestor: Account!
   tokenIds: [BigInt!]!
   price: BigInt!
+  country: String!
+  classification: BigInt!
 
   taker: Account
   endTime: BigInt
