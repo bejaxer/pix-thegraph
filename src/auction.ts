@@ -67,6 +67,7 @@ export function handleAuctionRequested(event: SaleRequested): void {
   }
 
   let saleLog = new SaleLog(totalEntity.value.toString());
+  saleLog.logId = totalEntity.value;
   saleLog.sale = getSaleId(event.params.saleId);
   saleLog.status = new BigInt(0);
   saleLog.save();
@@ -100,6 +101,7 @@ export function handleAuctionCancelled(event: SaleCancelled): void {
   let totalEntity = Global.load("totalSaleLogs");
 
   let saleLog = new SaleLog(totalEntity.value.toString());
+  saleLog.logId = totalEntity.value;
   saleLog.sale = getSaleId(event.params.saleId);
   saleLog.status = new BigInt(1);
   saleLog.save();
@@ -171,6 +173,7 @@ export function handleAuctionPurchased(event: Purchased): void {
   let totalEntity = Global.load("totalSaleLogs");
 
   let saleLog = new SaleLog(totalEntity.value.toString());
+  saleLog.logId = totalEntity.value;
   saleLog.sale = getSaleId(event.params.saleId);
   saleLog.status = new BigInt(2);
   saleLog.save();

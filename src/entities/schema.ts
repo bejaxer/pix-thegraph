@@ -549,6 +549,15 @@ export class SaleLog extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get logId(): BigInt {
+    let value = this.get("logId");
+    return value.toBigInt();
+  }
+
+  set logId(value: BigInt) {
+    this.set("logId", Value.fromBigInt(value));
+  }
+
   get sale(): string {
     let value = this.get("sale");
     return value.toString();

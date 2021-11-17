@@ -59,6 +59,7 @@ type Sale @entity {
 type SaleLog @entity {
   id: ID!
 
+  logId: BigInt!
   sale: Sale!
   status: BigInt!
 }
