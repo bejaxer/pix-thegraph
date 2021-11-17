@@ -23,6 +23,7 @@ type PIX @entity {
   classification: BigInt!
   country: String!
   account: Account!
+  sale: Sale
 }
 
 type PIXTransfer @entity {
@@ -48,6 +49,7 @@ type Sale @entity {
   soldDate: BigInt
 
   bids: [Bid]! @derivedFrom(field: "sale")
+  pixes: [PIX]! @derivedFrom(field: "sale")
 }
 
 type SaleLog @entity {

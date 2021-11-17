@@ -6,7 +6,7 @@ import {
   SaleCancelled,
   Purchased,
 } from "./entities/PIXFixedSale/PIXFixedSale";
-import { Global, Sale, SaleLog } from "./entities/schema";
+import { Global, Sale, SaleLog, PIX } from "./entities/schema";
 
 export function handleSaleRequested(event: SaleRequested): void {
   let entity = Global.load("fixedSales");
@@ -34,6 +34,15 @@ export function handleSaleRequested(event: SaleRequested): void {
   sale.tokenIds = event.params.tokenIds;
   sale.price = event.params.price;
   sale.save();
+
+  let tokenIds = sale.tokenIds as Array<BigInt>;
+  for (let i = 0; i < tokenIds.length; i++) {
+    let pix = PIX.load(getPIXId(tokenIds[i]));
+    if (pix != null) {
+      pix.sale = sale.id;
+      pix.save();
+    }
+  }
 
   let totalEntity = Global.load("totalSaleLogs");
   if (totalEntity == null) {
@@ -113,4 +122,8 @@ export function handleSalePurchased(event: Purchased): void {
 
 function getSaleId(id: BigInt): string {
   return "F" + id.toString();
+}
+
+function getPIXId(id: BigInt): string {
+  return "PIX - " + id.toString();
 }
