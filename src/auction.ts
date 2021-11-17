@@ -51,6 +51,8 @@ export function handleAuctionRequested(event: SaleRequested): void {
       pix.save();
 
       if (i == 0) {
+        sale.category = pix.category;
+        sale.size = pix.size;
         sale.country = pix.country;
         sale.classification = pix.classification;
         sale.save();
@@ -123,6 +125,8 @@ export function handleBid(event: Bid): void {
   bid.price = event.params.bidAmount;
   bid.isActive = true;
   if (sale != null) {
+    bid.category = sale.category;
+    bid.size = sale.size;
     bid.country = sale.country;
     bid.classification = sale.classification;
   }

@@ -43,6 +43,8 @@ export function handleSaleRequested(event: SaleRequested): void {
       pix.save();
 
       if (i == 0) {
+        sale.category = pix.category;
+        sale.size = pix.size;
         sale.country = pix.country;
         sale.classification = pix.classification;
         sale.save();

@@ -43,8 +43,10 @@ type Sale @entity {
   requestor: Account!
   tokenIds: [BigInt!]!
   price: BigInt!
-  country: String
+  category: BigInt
+  size: BigInt
   classification: BigInt
+  country: String
 
   taker: Account
   endTime: BigInt
@@ -68,6 +70,8 @@ type Bid @entity {
   bidder: Account!
   price: BigInt!
   isActive: Boolean!
-  country: String
+  category: BigInt
+  size: BigInt
   classification: BigInt
+  country: String
 }

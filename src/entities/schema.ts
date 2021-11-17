@@ -381,20 +381,37 @@ export class Sale extends Entity {
     this.set("price", Value.fromBigInt(value));
   }
 
-  get country(): string | null {
-    let value = this.get("country");
+  get category(): BigInt | null {
+    let value = this.get("category");
     if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set country(value: string | null) {
+  set category(value: BigInt | null) {
     if (value === null) {
-      this.unset("country");
+      this.unset("category");
     } else {
-      this.set("country", Value.fromString(value as string));
+      this.set("category", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get size(): BigInt | null {
+    let value = this.get("size");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set size(value: BigInt | null) {
+    if (value === null) {
+      this.unset("size");
+    } else {
+      this.set("size", Value.fromBigInt(value as BigInt));
     }
   }
 
@@ -412,6 +429,23 @@ export class Sale extends Entity {
       this.unset("classification");
     } else {
       this.set("classification", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get country(): string | null {
+    let value = this.get("country");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set country(value: string | null) {
+    if (value === null) {
+      this.unset("country");
+    } else {
+      this.set("country", Value.fromString(value as string));
     }
   }
 
@@ -600,20 +634,37 @@ export class Bid extends Entity {
     this.set("isActive", Value.fromBoolean(value));
   }
 
-  get country(): string | null {
-    let value = this.get("country");
+  get category(): BigInt | null {
+    let value = this.get("category");
     if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set country(value: string | null) {
+  set category(value: BigInt | null) {
     if (value === null) {
-      this.unset("country");
+      this.unset("category");
     } else {
-      this.set("country", Value.fromString(value as string));
+      this.set("category", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get size(): BigInt | null {
+    let value = this.get("size");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set size(value: BigInt | null) {
+    if (value === null) {
+      this.unset("size");
+    } else {
+      this.set("size", Value.fromBigInt(value as BigInt));
     }
   }
 
@@ -631,6 +682,23 @@ export class Bid extends Entity {
       this.unset("classification");
     } else {
       this.set("classification", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get country(): string | null {
+    let value = this.get("country");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set country(value: string | null) {
+    if (value === null) {
+      this.unset("country");
+    } else {
+      this.set("country", Value.fromString(value as string));
     }
   }
 }
