@@ -148,7 +148,7 @@ export function handleBidCancelled(event: BidCancelled): void {
     )
   )
     return;
-  bid.isActive = true;
+  bid.isActive = false;
   bid.save();
 }
 
