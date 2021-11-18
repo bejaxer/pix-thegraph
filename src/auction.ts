@@ -140,16 +140,14 @@ export function handleBidCancelled(event: BidCancelled): void {
 
   let bid = BidEntity.load(getBidId(event.params.saleId, totalBids.value));
   if (
-    !(
-      bid.sale != getSaleId(event.params.saleId) &&
-      bid.bidder != event.params.bidder.toHexString() &&
-      bid.price != event.params.bidAmount &&
-      bid.isActive
-    )
-  )
-    return;
-  bid.isActive = false;
-  bid.save();
+    bid.sale == getSaleId(event.params.saleId) &&
+    bid.bidder == event.params.bidder.toHexString() &&
+    bid.price == event.params.bidAmount &&
+    bid.isActive
+  ) {
+    bid.isActive = false;
+    bid.save();
+  }
 }
 
 export function handleAuctionPurchased(event: Purchased): void {
