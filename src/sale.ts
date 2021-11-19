@@ -59,7 +59,7 @@ export function handleSaleRequested(event: SaleRequested): void {
   let saleLog = new SaleLog(totalEntity.value.toString());
   saleLog.logId = totalEntity.value;
   saleLog.sale = getSaleId(event.params.saleId);
-  saleLog.status = new BigInt(0);
+  saleLog.status = BigInt.fromI32(0);
   saleLog.save();
 
   totalEntity.value = totalEntity.value.plus(BigInt.fromI32(1));
@@ -92,7 +92,7 @@ export function handleSaleCancelled(event: SaleCancelled): void {
   let saleLog = new SaleLog(totalEntity.value.toString());
   saleLog.logId = totalEntity.value;
   saleLog.sale = getSaleId(event.params.saleId);
-  saleLog.status = new BigInt(1);
+  saleLog.status = BigInt.fromI32(1);
   saleLog.save();
 
   totalEntity.value = totalEntity.value.plus(BigInt.fromI32(1));
@@ -122,7 +122,7 @@ export function handleSalePurchased(event: Purchased): void {
   let saleLog = new SaleLog(totalEntity.value.toString());
   saleLog.logId = totalEntity.value;
   saleLog.sale = getSaleId(event.params.saleId);
-  saleLog.status = new BigInt(2);
+  saleLog.status = BigInt.fromI32(2);
   saleLog.save();
 
   totalEntity.value = totalEntity.value.plus(BigInt.fromI32(1));
