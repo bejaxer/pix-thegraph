@@ -15,8 +15,6 @@ export function handlePIXMinted(event: PIXMinted): void {
   pix.pixId = event.params.pixId;
   pix.category = BigInt.fromI32(event.params.category);
   pix.size = BigInt.fromI32(event.params.size);
-  pix.classification = BigInt.fromI32(event.params.classification);
-  pix.country = event.params.country;
   pix.save();
 }
 
