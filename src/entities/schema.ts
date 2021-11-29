@@ -194,24 +194,6 @@ export class PIX extends Entity {
     this.set("size", Value.fromBigInt(value));
   }
 
-  get classification(): BigInt {
-    let value = this.get("classification");
-    return value.toBigInt();
-  }
-
-  set classification(value: BigInt) {
-    this.set("classification", Value.fromBigInt(value));
-  }
-
-  get country(): string {
-    let value = this.get("country");
-    return value.toString();
-  }
-
-  set country(value: string) {
-    this.set("country", Value.fromString(value));
-  }
-
   get account(): string {
     let value = this.get("account");
     return value.toString();
@@ -412,40 +394,6 @@ export class Sale extends Entity {
       this.unset("size");
     } else {
       this.set("size", Value.fromBigInt(value as BigInt));
-    }
-  }
-
-  get classification(): BigInt | null {
-    let value = this.get("classification");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set classification(value: BigInt | null) {
-    if (value === null) {
-      this.unset("classification");
-    } else {
-      this.set("classification", Value.fromBigInt(value as BigInt));
-    }
-  }
-
-  get country(): string | null {
-    let value = this.get("country");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set country(value: string | null) {
-    if (value === null) {
-      this.unset("country");
-    } else {
-      this.set("country", Value.fromString(value as string));
     }
   }
 
@@ -674,40 +622,6 @@ export class Bid extends Entity {
       this.unset("size");
     } else {
       this.set("size", Value.fromBigInt(value as BigInt));
-    }
-  }
-
-  get classification(): BigInt | null {
-    let value = this.get("classification");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set classification(value: BigInt | null) {
-    if (value === null) {
-      this.unset("classification");
-    } else {
-      this.set("classification", Value.fromBigInt(value as BigInt));
-    }
-  }
-
-  get country(): string | null {
-    let value = this.get("country");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set country(value: string | null) {
-    if (value === null) {
-      this.unset("country");
-    } else {
-      this.set("country", Value.fromString(value as string));
     }
   }
 }

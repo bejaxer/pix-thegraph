@@ -20,8 +20,6 @@ type PIX @entity {
   pixId: BigInt!
   category: BigInt!
   size: BigInt!
-  classification: BigInt!
-  country: String!
   account: Account!
   sale: Sale
 }
@@ -45,8 +43,6 @@ type Sale @entity {
   price: BigInt!
   category: BigInt
   size: BigInt
-  classification: BigInt
-  country: String
 
   taker: Account
   endTime: BigInt
@@ -73,6 +69,4 @@ type Bid @entity {
   isActive: Boolean!
   category: BigInt
   size: BigInt
-  classification: BigInt
-  country: String
 }
