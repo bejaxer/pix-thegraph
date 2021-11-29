@@ -143,6 +143,22 @@ export function handleBidCancelled(event: BidCancelled): void {
   ) {
     bid.isActive = false;
     bid.save();
+
+    for (
+      let i = BigInt.fromI32(1);
+      i < totalBids.value;
+      i = i.plus(BigInt.fromI32(1))
+    ) {
+      let bid = BidEntity.load(getBidId(event.params.saleId, i));
+      if (
+        bid != null &&
+        bid.sale == getSaleId(event.params.saleId) &&
+        bid.isActive
+      ) {
+        bid.isActive = false;
+        bid.save();
+      }
+    }
   }
 }
 
