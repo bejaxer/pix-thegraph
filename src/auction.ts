@@ -114,7 +114,14 @@ export function handleBid(event: Bid): void {
   if (totalBids == null) {
     totalBids = new Global(getTotalBidsKey(event.params.saleId));
     totalBids.value = BigInt.fromI32(0);
+  } else if (totalBids.value > BigInt.fromI32(0)) {
+    let bid = new BidEntity(getBidId(event.params.saleId, totalBids.value));
+    if (bid != null && bid.isActive) {
+      bid.isActive = true;
+      bid.save();
+    }
   }
+
   totalBids.value = totalBids.value.plus(BigInt.fromI32(1));
   totalBids.save();
 
@@ -143,22 +150,6 @@ export function handleBidCancelled(event: BidCancelled): void {
   ) {
     bid.isActive = false;
     bid.save();
-
-    for (
-      let i = BigInt.fromI32(1);
-      i < totalBids.value;
-      i = i.plus(BigInt.fromI32(1))
-    ) {
-      let bid = BidEntity.load(getBidId(event.params.saleId, i));
-      if (
-        bid != null &&
-        bid.sale == getSaleId(event.params.saleId) &&
-        bid.isActive
-      ) {
-        bid.isActive = false;
-        bid.save();
-      }
-    }
   }
 }
 
